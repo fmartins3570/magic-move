@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #DC2626;
+  --color-primary-hover: #EF4444;
+  --color-primary-dark: #B91C1C;
+  --color-base: #0A0A0A;
+  --color-surface: #141414;
+  --color-surface-raised: #1E1E1E;
+  --color-surface-overlay: rgba(10, 10, 10, 0.85);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(220, 38, 38, 0.3);
+  --color-text: #F1F5F9;
+  --color-text-muted: #94A3B8;
+  --color-heading: #FFFFFF;
+
+  --font-display: "Bebas Neue", "Montserrat", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  --ease-cinematic: cubic-bezier(0.23, 0.86, 0.39, 0.96);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-heading);
+}
+
+::selection {
+  background: var(--color-primary);
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-raised);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-dark);
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Custom cursor: hide default when custom is active */
+.cursor-none,
+.cursor-none * {
+  cursor: none !important;
+}
+
+/* Stroke text for marquee */
+.text-stroke {
+  -webkit-text-stroke: 2px currentColor;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Horizontal scroll panel */
+.horizontal-scroll-panel {
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100vh;
+}
