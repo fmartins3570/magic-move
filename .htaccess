@@ -2,20 +2,14 @@
   RewriteEngine On
   RewriteBase /
 
-  # If request is not already pointing to dist/
-  RewriteCond %{REQUEST_URI} !^/dist/
-
-  # If file exists in dist/, serve it
-  RewriteCond %{DOCUMENT_ROOT}/dist%{REQUEST_URI} -f [OR]
-  RewriteCond %{DOCUMENT_ROOT}/dist%{REQUEST_URI} -d
+  # Serve existing files from dist/ directly
+  RewriteCond %{DOCUMENT_ROOT}/%{HTTP_HOST}/dist%{REQUEST_URI} -f
   RewriteRule ^(.*)$ dist/$1 [L]
 
-  # Otherwise serve dist/index.html (SPA fallback)
-  RewriteCond %{REQUEST_URI} !^/dist/
+  # Everything else goes through index.php (SPA handler)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^ dist/index.html [L]
+  RewriteRule ^ index.php [L]
 </IfModule>
 
-# Fallback if no file found at all
-DirectoryIndex dist/index.html
+DirectoryIndex index.php
