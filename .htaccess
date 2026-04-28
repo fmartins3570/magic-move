@@ -1,5 +1,21 @@
-RewriteEngine On
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
 
-# Serve everything from dist/ subfolder
-RewriteCond %{REQUEST_URI} !^/dist/
-RewriteRule ^(.*)$ /dist/$1 [L]
+  # If request is not already pointing to dist/
+  RewriteCond %{REQUEST_URI} !^/dist/
+
+  # If file exists in dist/, serve it
+  RewriteCond %{DOCUMENT_ROOT}/dist%{REQUEST_URI} -f [OR]
+  RewriteCond %{DOCUMENT_ROOT}/dist%{REQUEST_URI} -d
+  RewriteRule ^(.*)$ dist/$1 [L]
+
+  # Otherwise serve dist/index.html (SPA fallback)
+  RewriteCond %{REQUEST_URI} !^/dist/
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ dist/index.html [L]
+</IfModule>
+
+# Fallback if no file found at all
+DirectoryIndex dist/index.html
