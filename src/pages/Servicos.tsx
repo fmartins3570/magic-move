@@ -13,6 +13,7 @@ import {
   Hand,
   Sparkles,
   User,
+  Tv,
   Check,
   ArrowRight,
 } from "lucide-react";
@@ -79,6 +80,14 @@ const services: ServiceDetail[] = [
     descKey: "services.items.character.desc",
     deliverables: ["Character Concept", "Motion Capture", "Facial Animation", "Voice Sync"],
     ctaLabel: "Animacao de Personagens",
+  },
+  {
+    key: "series",
+    icon: Tv,
+    titleKey: "services.items.series.title",
+    descKey: "services.items.series.desc",
+    deliverables: ["Desenvolvimento de Formato", "Biblia de Producao", "Episodios Piloto", "Temporadas Completas"],
+    ctaLabel: "Series",
   },
 ];
 
@@ -186,7 +195,7 @@ export default function Servicos() {
                     href={`${WHATSAPP_URL}?text=${encodeURIComponent(`Ola! Tenho interesse em ${service.ctaLabel}.`)}`}
                     size="lg"
                   >
-                    {t("nav.budget")} — {service.ctaLabel}
+                    Fale Conosco
                     <ArrowRight className="ml-1 h-4 w-4" />
                   </Button>
                 </FadeIn>

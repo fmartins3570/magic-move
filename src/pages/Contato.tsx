@@ -51,6 +51,7 @@ const serviceOptions = [
   "Stop Motion",
   "VFX",
   "Animacao de Personagens",
+  "Series",
   "Outro",
 ];
 

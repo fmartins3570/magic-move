@@ -44,6 +44,10 @@ const ptBR = {
         title: "Animacao de Personagens",
         desc: "Desenvolvimento completo de personagens, do concept art a animacao final, com rigging profissional e expressoes que dao vida as suas historias.",
       },
+      series: {
+        title: "Series",
+        desc: "Producao completa de series animadas, do desenvolvimento de formato e bíblia de producao ate a entrega de temporadas completas para TV e streaming.",
+      },
     },
   },
   portfolio: {

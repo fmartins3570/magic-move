@@ -10,52 +10,6 @@ import TextSplitReveal from "@/components/motion/TextSplitReveal";
 import MagneticButton from "@/components/motion/MagneticButton";
 import { WHATSAPP_URL } from "@/lib/constants";
 
-// ---------------------------------------------------------------------------
-// Animated gradient orbs — large blurred circles that drift with parallax
-// ---------------------------------------------------------------------------
-
-function GradientOrb({
-  color,
-  size,
-  initialX,
-  initialY,
-  duration,
-}: {
-  color: string;
-  size: number;
-  initialX: string;
-  initialY: string;
-  duration: number;
-}) {
-  return (
-    <motion.div
-      className="absolute rounded-full pointer-events-none blur-[120px]"
-      style={{
-        width: size,
-        height: size,
-        left: initialX,
-        top: initialY,
-        background: color,
-      }}
-      animate={{
-        x: [0, 50, -30, 20, 0],
-        y: [0, -40, 20, -60, 0],
-        scale: [1, 1.2, 0.9, 1.1, 1],
-      }}
-      transition={{
-        duration,
-        repeat: Infinity,
-        repeatType: "loop",
-        ease: "easeInOut",
-      }}
-    />
-  );
-}
-
-// ---------------------------------------------------------------------------
-// SVG red accent line — draws from left to right
-// ---------------------------------------------------------------------------
-
 function RedAccentLine() {
   return (
     <motion.svg
@@ -82,10 +36,6 @@ function RedAccentLine() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Scroll indicator — a growing line + "scroll" text
-// ---------------------------------------------------------------------------
-
 function ScrollIndicator() {
   return (
     <motion.div
@@ -111,10 +61,6 @@ function ScrollIndicator() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// HeroShowreel — Cinematic full-screen opening experience
-// ---------------------------------------------------------------------------
-
 export default function HeroShowreel() {
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -123,59 +69,44 @@ export default function HeroShowreel() {
     offset: ["start start", "end start"],
   });
 
-  // Parallax zoom-out effect on scroll
   const titleScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.85]);
   const titleOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
   const contentY = useTransform(scrollYProgress, [0, 0.5], [0, -80]);
 
-  // Smooth spring for title transforms
+  // Parallax layers - background moves slower, foreground faster
+  const orbY = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const vignetteY = useTransform(scrollYProgress, [0, 1], [0, 60]);
+
   const smoothScale = useSpring(titleScale, { stiffness: 100, damping: 30 });
   const smoothY = useSpring(contentY, { stiffness: 100, damping: 30 });
+  const smoothOrbY = useSpring(orbY, { stiffness: 60, damping: 25 });
 
   return (
     <section
       ref={sectionRef}
       className="relative h-screen flex items-center justify-center overflow-hidden bg-base"
     >
-      {/* ----- Animated gradient orbs background ----- */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <GradientOrb
-          color="rgba(220, 38, 38, 0.08)"
-          size={800}
-          initialX="-10%"
-          initialY="-20%"
-          duration={25}
+      {/* Gradient orbs - CSS only, no framer-motion infinite loops */}
+      <motion.div className="absolute inset-0 z-0 overflow-hidden" style={{ y: smoothOrbY }}>
+        <div
+          className="absolute rounded-full pointer-events-none blur-[120px] w-[700px] h-[700px] -left-[10%] -top-[20%]"
+          style={{ background: "rgba(220, 38, 38, 0.07)" }}
         />
-        <GradientOrb
-          color="rgba(220, 38, 38, 0.05)"
-          size={600}
-          initialX="60%"
-          initialY="50%"
-          duration={30}
+        <div
+          className="absolute rounded-full pointer-events-none blur-[120px] w-[500px] h-[500px] right-[10%] bottom-[10%]"
+          style={{ background: "rgba(220, 38, 38, 0.05)" }}
         />
-        <GradientOrb
-          color="rgba(120, 20, 20, 0.06)"
-          size={500}
-          initialX="30%"
-          initialY="70%"
-          duration={22}
-        />
-        <GradientOrb
-          color="rgba(255, 255, 255, 0.02)"
-          size={700}
-          initialX="70%"
-          initialY="-10%"
-          duration={28}
-        />
-      </div>
+      </motion.div>
 
-      {/* ----- Dark vignette overlay ----- */}
-      <div className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(10,10,10,0.4)_60%,rgba(10,10,10,0.9)_100%)] pointer-events-none" />
+      {/* Vignette with parallax */}
+      <motion.div
+        className="absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(10,10,10,0.4)_60%,rgba(10,10,10,0.9)_100%)] pointer-events-none"
+        style={{ y: vignetteY }}
+      />
 
-      {/* ----- Red accent line ----- */}
       <RedAccentLine />
 
-      {/* ----- Main content ----- */}
+      {/* Main content - parallax zoom-out */}
       <motion.div
         className="relative z-[2] flex flex-col items-center px-4 text-center w-full"
         style={{
@@ -184,7 +115,6 @@ export default function HeroShowreel() {
           y: smoothY,
         }}
       >
-        {/* MAGIC MOVE — massive character-by-character reveal */}
         <div className="mb-2">
           <TextSplitReveal
             text="MAGIC MOVE"
@@ -194,7 +124,6 @@ export default function HeroShowreel() {
           />
         </div>
 
-        {/* ANIMATION STUDIO — tracked-out subtitle */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -205,7 +134,6 @@ export default function HeroShowreel() {
           </span>
         </motion.div>
 
-        {/* CTA buttons — slide up from below */}
         <motion.div
           className="mt-12 md:mt-16 flex flex-col sm:flex-row items-center gap-4 sm:gap-6"
           initial={{ opacity: 0, y: 60 }}
@@ -232,16 +160,7 @@ export default function HeroShowreel() {
         </motion.div>
       </motion.div>
 
-      {/* ----- Scroll indicator ----- */}
       <ScrollIndicator />
-
-      {/* ----- Film grain texture overlay ----- */}
-      <div
-        className="absolute inset-0 z-[3] pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
-        }}
-      />
     </section>
   );
 }

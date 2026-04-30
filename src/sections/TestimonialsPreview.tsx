@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
@@ -37,7 +37,7 @@ const testimonials: Testimonial[] = [
 // Word-by-word stagger animation for testimonial text
 // ---------------------------------------------------------------------------
 
-function StaggeredWords({ text, key: animKey }: { text: string; key: string }) {
+function StaggeredWords({ text, animKey }: { text: string; animKey: string }) {
   const words = text.split(" ");
 
   return (
@@ -90,8 +90,17 @@ function StaggeredWords({ text, key: animKey }: { text: string; key: string }) {
 
 export default function TestimonialsPreview() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
 
-  // Auto-cycle every 5 seconds
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const quoteY = useTransform(scrollYProgress, [0, 1], [100, -100]);
+  const quoteScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 1.2]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [40, -20]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
@@ -106,22 +115,26 @@ export default function TestimonialsPreview() {
   const current = testimonials[currentIndex];
 
   return (
-    <section className="relative bg-base py-32 md:py-40 overflow-hidden">
-      {/* Giant decorative quote mark — background */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+    <section ref={sectionRef} className="relative bg-base py-32 md:py-40 overflow-hidden">
+      {/* Giant decorative quote mark with parallax */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
+        style={{ y: quoteY, scale: quoteScale }}
+      >
         <span className="font-display text-[30vw] md:text-[25vw] text-surface-raised leading-none">
           &ldquo;
         </span>
-      </div>
+      </motion.div>
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
+      {/* Content with parallax */}
+      <motion.div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center" style={{ y: contentY }}>
         {/* Testimonial quote with word-by-word stagger */}
         <div className="min-h-[200px] md:min-h-[250px] flex items-center justify-center">
           <AnimatePresence mode="wait">
             <StaggeredWords
               text={current.quote}
               key={`testimonial-${currentIndex}`}
+              animKey={`testimonial-${currentIndex}`}
             />
           </AnimatePresence>
         </div>
@@ -177,7 +190,7 @@ export default function TestimonialsPreview() {
             </button>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

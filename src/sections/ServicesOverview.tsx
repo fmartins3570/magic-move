@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useCursor } from "@/components/ui/CustomCursor";
 import TextSplitReveal from "@/components/motion/TextSplitReveal";
@@ -51,6 +51,12 @@ const services: ServiceItem[] = [
     name: "Animacao de Personagens",
     description:
       "Personagens com alma. Character design, rigging e animacao que criam conexao emocional com o publico.",
+  },
+  {
+    number: "07",
+    name: "Series",
+    description:
+      "Producao completa de series animadas. Do formato a temporadas inteiras para TV e plataformas de streaming.",
   },
 ];
 
@@ -169,18 +175,31 @@ function ServiceRow({
 // ---------------------------------------------------------------------------
 
 export default function ServicesOverview() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const titleY = useTransform(scrollYProgress, [0, 1], [60, -40]);
+  const lineY = useTransform(scrollYProgress, [0, 1], [40, -20]);
+
   return (
-    <section className="relative bg-base py-24 md:py-32 overflow-hidden">
-      {/* Section title */}
+    <section ref={sectionRef} className="relative bg-base py-24 md:py-32 overflow-hidden">
+      {/* Section title with parallax */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-16 md:mb-24">
-        <TextSplitReveal
-          text="O QUE FAZEMOS"
-          className="text-5xl md:text-7xl lg:text-8xl font-display text-heading leading-none"
-          delay={0.1}
-          staggerDelay={0.04}
-        />
+        <motion.div style={{ y: titleY }}>
+          <TextSplitReveal
+            text="O QUE FAZEMOS"
+            className="text-5xl md:text-7xl lg:text-8xl font-display text-heading leading-none"
+            delay={0.1}
+            staggerDelay={0.04}
+          />
+        </motion.div>
         <motion.div
           className="mt-4 h-[2px] w-20 bg-primary origin-left"
+          style={{ y: lineY }}
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
@@ -190,7 +209,6 @@ export default function ServicesOverview() {
 
       {/* Service rows */}
       <div className="mx-auto max-w-7xl">
-        {/* Top border */}
         <div className="border-t border-white/[0.06]" />
         {services.map((service, index) => (
           <ServiceRow key={service.number} service={service} index={index} />

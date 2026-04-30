@@ -5,7 +5,6 @@ import Header from "./Header";
 import Footer from "./Footer";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
 import BackToTop from "@/components/ui/BackToTop";
-import FilmGrain from "@/components/ui/FilmGrain";
 
 export default function Layout() {
   const location = useLocation();
@@ -34,7 +33,6 @@ export default function Layout() {
       <Footer />
       <WhatsAppButton />
       <BackToTop />
-      <FilmGrain />
     </div>
   );
 }

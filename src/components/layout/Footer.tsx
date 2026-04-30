@@ -19,6 +19,7 @@ const SERVICE_LINKS = [
   { label: "Stop Motion", to: "/servicos" },
   { label: "Efeitos Visuais", to: "/servicos" },
   { label: "Animacao de Personagens", to: "/servicos" },
+  { label: "Series", to: "/servicos" },
 ];
 
 const SOCIAL_LINKS = [

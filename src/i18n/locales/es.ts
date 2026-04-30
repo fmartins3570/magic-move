@@ -44,6 +44,10 @@ const es = {
         title: "Animacion de Personajes",
         desc: "Desarrollo completo de personajes, desde el concept art hasta la animacion final, con rigging profesional y expresiones que dan vida a tus historias.",
       },
+      series: {
+        title: "Series",
+        desc: "Produccion completa de series animadas, desde el desarrollo de formato y biblia de produccion hasta la entrega de temporadas completas para TV y streaming.",
+      },
     },
   },
   portfolio: {

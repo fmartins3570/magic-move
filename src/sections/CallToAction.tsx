@@ -4,11 +4,7 @@ import TextSplitReveal from "@/components/motion/TextSplitReveal";
 import MagneticButton from "@/components/motion/MagneticButton";
 import { WHATSAPP_URL } from "@/lib/constants";
 
-// ---------------------------------------------------------------------------
-// SVG circle that draws on scroll around the CTA button area
-// ---------------------------------------------------------------------------
-
-function AnimatedCircle({ scrollYProgress }: { scrollYProgress: any }) {
+function AnimatedCircle({ scrollYProgress }: { scrollYProgress: ReturnType<typeof useScroll>["scrollYProgress"] }) {
   const pathLength = useTransform(scrollYProgress, [0.2, 0.8], [0, 1]);
   const opacity = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
 
@@ -32,10 +28,6 @@ function AnimatedCircle({ scrollYProgress }: { scrollYProgress: any }) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// CallToAction — Final CTA that feels like a movie ending
-// ---------------------------------------------------------------------------
-
 export default function CallToAction() {
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -44,34 +36,32 @@ export default function CallToAction() {
     offset: ["start end", "end start"],
   });
 
+  const headlineY = useTransform(scrollYProgress, [0, 1], [60, -30]);
+  const buttonY = useTransform(scrollYProgress, [0, 1], [80, -20]);
+  const watermarkY = useTransform(scrollYProgress, [0, 1], [120, -60]);
+  const watermarkScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1, 1.1]);
+
   return (
     <section
       ref={sectionRef}
       className="relative bg-base py-40 md:py-56 overflow-hidden"
     >
-      {/* Subtle film grain overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03] z-[1]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
-        }}
-      />
-
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
-        {/* Main headline */}
-        <div className="mb-6">
+        {/* Main headline with parallax */}
+        <motion.div className="mb-6" style={{ y: headlineY }}>
           <TextSplitReveal
             text="TEM UM PROJETO EM MENTE?"
             className="text-[7vw] md:text-[5vw] lg:text-[4.5vw] font-display text-heading leading-[0.95] tracking-tight"
             delay={0.1}
             staggerDelay={0.04}
           />
-        </div>
+        </motion.div>
 
         {/* Subtitle */}
         <motion.p
           className="font-body text-lg md:text-xl text-text-muted mb-16 md:mb-20"
+          style={{ y: headlineY }}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -80,9 +70,10 @@ export default function CallToAction() {
           Vamos transformar sua ideia em realidade
         </motion.p>
 
-        {/* CTA button with animated circle */}
+        {/* CTA button with animated circle and parallax */}
         <motion.div
           className="relative inline-block"
+          style={{ y: buttonY }}
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -104,8 +95,11 @@ export default function CallToAction() {
         </motion.div>
       </div>
 
-      {/* Magic Move logo mark — large, faded */}
-      <div className="absolute bottom-0 left-0 right-0 flex justify-center pointer-events-none overflow-hidden">
+      {/* MAGIC MOVE watermark with deep parallax */}
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 flex justify-center pointer-events-none overflow-hidden"
+        style={{ y: watermarkY, scale: watermarkScale }}
+      >
         <motion.span
           className="font-display text-[20vw] md:text-[15vw] text-white/[0.03] leading-none select-none translate-y-[30%]"
           initial={{ opacity: 0 }}
@@ -115,7 +109,7 @@ export default function CallToAction() {
         >
           MAGIC MOVE
         </motion.span>
-      </div>
+      </motion.div>
     </section>
   );
 }

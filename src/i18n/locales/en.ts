@@ -44,6 +44,10 @@ const en = {
         title: "Character Animation",
         desc: "Complete character development from concept art to final animation, with professional rigging and expressions that bring your stories to life.",
       },
+      series: {
+        title: "Series",
+        desc: "Full production of animated series, from format development and production bibles to delivery of complete seasons for TV and streaming platforms.",
+      },
     },
   },
   portfolio: {

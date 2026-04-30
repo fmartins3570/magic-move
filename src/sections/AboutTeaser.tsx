@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import TextSplitReveal from "@/components/motion/TextSplitReveal";
 import Tilt3DCard from "@/components/motion/Tilt3DCard";
 import { cn } from "@/lib/utils";
@@ -71,12 +71,21 @@ function AnimatedStatCard({
 export default function AboutTeaser() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const leftY = useTransform(scrollYProgress, [0, 1], [50, -30]);
+  const rightY = useTransform(scrollYProgress, [0, 1], [80, -50]);
+  const accentY = useTransform(scrollYProgress, [0, 1], [100, -60]);
+
   return (
     <section ref={sectionRef} className="relative bg-base overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 min-h-screen items-start py-24 md:py-32">
-          {/* ----- Left half: sticky manifesto ----- */}
-          <div className="lg:sticky lg:top-32 lg:self-start">
+          {/* ----- Left half: sticky manifesto with parallax ----- */}
+          <motion.div className="lg:sticky lg:top-32 lg:self-start" style={{ y: leftY }}>
             {/* Manifesto headline */}
             <div className="mb-8">
               <TextSplitReveal
@@ -104,9 +113,10 @@ export default function AboutTeaser() {
               existiu antes.
             </motion.p>
 
-            {/* Large red accent number */}
+            {/* Large red accent number with deeper parallax */}
             <motion.div
               className="flex items-end gap-4"
+              style={{ y: accentY }}
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -136,10 +146,10 @@ export default function AboutTeaser() {
                 ease: [0.23, 0.86, 0.39, 0.96],
               }}
             />
-          </div>
+          </motion.div>
 
-          {/* ----- Right half: scrolling stat cards ----- */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* ----- Right half: scrolling stat cards with parallax ----- */}
+          <motion.div className="grid grid-cols-1 sm:grid-cols-2 gap-6" style={{ y: rightY }}>
             {stats.map((stat, index) => (
               <AnimatedStatCard key={stat.label} stat={stat} index={index} />
             ))}
@@ -169,7 +179,7 @@ export default function AboutTeaser() {
                 <div className="h-px flex-1 bg-white/[0.06]" />
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
